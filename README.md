@@ -67,10 +67,18 @@ curl "http://localhost:8080/api/books?page=0&size=5&sort=price,asc&genre=Fiction
 | GET    | `/api/books/featured` | Featured books for the home page         | Public |
 | GET    | `/api/books/{id}`     | Single book details                      | Public |
 | GET    | `/api/categories`     | List all categories                       | Public |
+| POST   | `/api/orders`         | Checkout: place an order from cart items | Required |
+| GET    | `/api/orders`         | Current user's order history             | Required |
+| GET    | `/api/orders/{id}`    | A single order (must belong to caller)   | Required |
 
 `GET /api/books` query params: `search`, `genre` (repeatable), `author`,
 `minPrice`, `maxPrice`, `inStock`, `page`, `size`, `sort`
 (`price,asc` / `price,desc` / `title,asc` / `createdAt,desc`).
+
+`POST /api/orders` body: `{ "items": [{ "bookId": 1, "quantity": 2 }, ...], "shippingAddress": "..." }`.
+Stock is validated and decremented atomically in one transaction; if any
+item's requested quantity exceeds available stock, the whole order is
+rejected with `409 Conflict` and no stock is touched.
 
 ## 3. Frontend (React + Vite)
 
@@ -106,9 +114,10 @@ onlinebookstore/
 └── frontend/
     └── src/
         ├── components/   # Navbar, Footer, BookCard, CategoryCard, ...
-        ├── pages/        # Home, Login, Register, Catalogue, BookDetail
+        ├── pages/        # Home, Login, Register, Catalogue, BookDetail,
+        │                 # Cart, Checkout
         ├── services/     # api.js (Axios instance with JWT interceptor)
-        └── context/      # AuthContext (login state, localStorage)
+        └── context/      # AuthContext (login state), CartContext (cart state)
 ```
 
 ## Notable implementation details
@@ -125,5 +134,13 @@ onlinebookstore/
   present, so search, genre, author, price range, and availability can be
   combined freely alongside pagination and sorting.
 - **Protected routes**: the frontend's `ProtectedRoute` wrapper redirects
-  unauthenticated users to `/login` (used for the book detail page) and
-  returns them to where they came from after logging in.
+  unauthenticated users to `/login` (used for the book detail page and
+  checkout) and returns them to where they came from after logging in.
+- **Cart & checkout**: the cart itself is client-side (`CartContext`,
+  persisted to `localStorage`, cleared on logout) — it's just a staging area
+  while browsing. Checkout submits the cart to `POST /api/orders`, which is
+  the actual source of truth: it re-validates stock server-side, decrements
+  it, and persists an `Order`/`OrderItem` row per purchase inside a single
+  transaction, so a race between two checkouts (or a stale client-side stock
+  figure) can't oversell — the second request simply gets a `409` naming the
+  book and the shortfall.

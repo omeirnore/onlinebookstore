@@ -7,6 +7,8 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Catalogue from "./pages/Catalogue.jsx";
 import BookDetail from "./pages/BookDetail.jsx";
+import Cart from "./pages/Cart.jsx";
+import Checkout from "./pages/Checkout.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -24,6 +26,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <BookDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
               </ProtectedRoute>
             }
           />

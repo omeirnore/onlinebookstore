@@ -1,9 +1,24 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useCart } from "../context/CartContext.jsx";
+
+function CartLink({ count, onClick, className = "" }) {
+  return (
+    <Link to="/cart" onClick={onClick} className={`relative hover:text-brand-200 ${className}`}>
+      🛒 Cart
+      {count > 0 && (
+        <span className="absolute -right-3 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+          {count > 9 ? "9+" : count}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
+  const { totalItems, clear } = useCart();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,6 +31,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
+    clear();
     setMenuOpen(false);
     navigate("/");
   };
@@ -34,6 +50,7 @@ export default function Navbar() {
           <Link to="/catalogue" className="hover:text-brand-200">
             Catalogue
           </Link>
+          <CartLink count={totalItems} />
         </nav>
 
         <form onSubmit={handleSearch} className="ml-auto hidden flex-1 max-w-sm items-center sm:flex">
@@ -116,6 +133,7 @@ export default function Navbar() {
             <Link to="/catalogue" onClick={() => setMenuOpen(false)} className="hover:text-brand-200">
               Catalogue
             </Link>
+            <CartLink count={totalItems} onClick={() => setMenuOpen(false)} className="w-fit" />
           </nav>
 
           <div className="flex flex-col gap-2 text-sm">

@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../services/api.js";
 import BookCover from "../components/BookCover.jsx";
+import { useCart } from "../context/CartContext.jsx";
 
 export default function BookDetail() {
   const { id } = useParams();
+  const { items, addItem } = useCart();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [justAdded, setJustAdded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,12 +85,59 @@ export default function BookDetail() {
 
           <p className="mt-6 leading-relaxed text-gray-700">{book.description}</p>
 
-          <button
-            disabled={!book.inStock}
-            className="mt-8 rounded-md bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Add to Cart
-          </button>
+          {book.inStock && (
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <label htmlFor="quantity" className="text-sm font-medium text-gray-700">
+                Qty
+              </label>
+              <select
+                id="quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+              >
+                {Array.from({ length: Math.min(book.stockQty, 10) }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                onClick={() => {
+                  addItem(book, quantity);
+                  setJustAdded(true);
+                  setTimeout(() => setJustAdded(false), 2000);
+                }}
+                className="rounded-md bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
+              >
+                Add to Cart
+              </button>
+
+              {justAdded && (
+                <span className="text-sm font-medium text-green-600">Added to cart!</span>
+              )}
+            </div>
+          )}
+
+          {!book.inStock && (
+            <button
+              disabled
+              className="mt-8 cursor-not-allowed rounded-md bg-brand-600 px-6 py-3 font-semibold text-white opacity-50"
+            >
+              Add to Cart
+            </button>
+          )}
+
+          {items.some((i) => i.bookId === book.bookId) && (
+            <p className="mt-3 text-sm text-gray-500">
+              {items.find((i) => i.bookId === book.bookId).quantity} already in your{" "}
+              <Link to="/cart" className="font-semibold text-brand-700 hover:underline">
+                cart
+              </Link>
+              .
+            </p>
+          )}
         </div>
       </div>
     </div>
