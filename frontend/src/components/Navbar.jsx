@@ -74,6 +74,9 @@ export default function Navbar() {
           {isAuthenticated ? (
             <>
               <span className="hidden lg:inline">Hi, {user.fullName?.split(" ")[0]}</span>
+              <Link to="/orders" className="rounded-md px-3 py-1.5 font-semibold hover:bg-brand-700">
+                Orders
+              </Link>
               <button
                 onClick={handleLogout}
                 className="rounded-md border border-brand-300 px-3 py-1.5 font-semibold hover:bg-brand-700"
@@ -140,6 +143,13 @@ export default function Navbar() {
             {isAuthenticated ? (
               <>
                 <span>Hi, {user.fullName?.split(" ")[0]}</span>
+                <Link
+                  to="/orders"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-md border border-brand-300 px-3 py-2 text-center font-semibold hover:bg-brand-700"
+                >
+                  Orders
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="rounded-md border border-brand-300 px-3 py-2 text-center font-semibold hover:bg-brand-700"

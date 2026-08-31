@@ -56,12 +56,20 @@ export default function Checkout() {
           ))}
         </div>
 
-        <Link
-          to="/catalogue"
-          className="inline-block rounded-md bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
-        >
-          Continue Shopping
-        </Link>
+        <div className="flex justify-center gap-3">
+          <Link
+            to="/catalogue"
+            className="rounded-md bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
+          >
+            Continue Shopping
+          </Link>
+          <Link
+            to="/orders"
+            className="rounded-md border border-gray-300 px-6 py-3 font-semibold text-gray-700 hover:bg-gray-50"
+          >
+            View Order History
+          </Link>
+        </div>
       </div>
     );
   }

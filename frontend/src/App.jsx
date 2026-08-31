@@ -9,6 +9,7 @@ import Catalogue from "./pages/Catalogue.jsx";
 import BookDetail from "./pages/BookDetail.jsx";
 import Cart from "./pages/Cart.jsx";
 import Checkout from "./pages/Checkout.jsx";
+import OrderHistory from "./pages/OrderHistory.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -35,6 +36,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrderHistory />
               </ProtectedRoute>
             }
           />

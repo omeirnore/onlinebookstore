@@ -115,7 +115,7 @@ onlinebookstore/
     └── src/
         ├── components/   # Navbar, Footer, BookCard, CategoryCard, ...
         ├── pages/        # Home, Login, Register, Catalogue, BookDetail,
-        │                 # Cart, Checkout
+        │                 # Cart, Checkout, OrderHistory
         ├── services/     # api.js (Axios instance with JWT interceptor)
         └── context/      # AuthContext (login state), CartContext (cart state)
 ```
