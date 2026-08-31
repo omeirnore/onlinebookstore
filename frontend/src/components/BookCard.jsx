@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import BookCover from "./BookCover.jsx";
 
 function Stars({ rating = 0 }) {
   const full = Math.round(rating);
@@ -21,11 +22,10 @@ export default function BookCard({ book, view = "grid" }) {
         isList ? "flex-row items-stretch" : "flex-col"
       }`}
     >
-      <img
-        src={book.coverUrl || "https://placehold.co/200x300?text=No+Cover"}
+      <BookCover
+        src={book.coverUrl}
         alt={`Cover of ${book.title}`}
         className={isList ? "h-40 w-28 flex-shrink-0 object-cover" : "h-56 w-full object-cover"}
-        loading="lazy"
       />
       <div className="flex flex-1 flex-col gap-1 p-3">
         <h3 className="line-clamp-2 font-semibold text-gray-900">{book.title}</h3>

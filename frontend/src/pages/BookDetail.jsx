@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../services/api.js";
+import BookCover from "../components/BookCover.jsx";
 
 export default function BookDetail() {
   const { id } = useParams();
@@ -52,8 +53,8 @@ export default function BookDetail() {
       </Link>
 
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-[280px_1fr]">
-        <img
-          src={book.coverUrl || "https://placehold.co/280x400?text=No+Cover"}
+        <BookCover
+          src={book.coverUrl}
           alt={`Cover of ${book.title}`}
           className="w-full rounded-lg object-cover shadow"
         />
