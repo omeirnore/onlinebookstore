@@ -25,11 +25,13 @@ public class DataSeeder implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
     private final BookRepository bookRepository;
+    private final CoverArtBackfillService coverArtBackfillService;
 
     @Override
     public void run(String... args) {
         Map<String, Category> categories = seedCategories();
         seedBooks(categories);
+        coverArtBackfillService.backfillAll();
     }
 
     private Map<String, Category> seedCategories() {
@@ -79,7 +81,6 @@ public class DataSeeder implements CommandLineRunner {
                 .isbn(s.isbn())
                 .description(s.description())
                 .price(new BigDecimal(s.price()))
-                .coverUrl("https://covers.openlibrary.org/b/isbn/" + s.isbn() + "-M.jpg")
                 .category(categories.get(s.categoryName()))
                 .stockQty(s.stock())
                 .isFeatured(s.featured())

@@ -40,7 +40,7 @@ public class Book {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "cover_url", length = 500)
+    @Column(name = "cover_url", columnDefinition = "MEDIUMTEXT")
     private String coverUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
